@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "domain_suffix": [
+        "openai.com",
+        "chatgpt.com",
+        "oaistatic.com",
+        "oaiusercontent.com"
+      ]
+    },
+    {
+      "domain_keyword": [
+        "adservice",
+        "analytics"
+      ]
+    }
+  ]
+}
