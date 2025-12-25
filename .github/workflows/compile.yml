@@ -1,0 +1,50 @@
+name: Compile Sing-box Ruleset
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/*.json' # 只有当 src 目录下的 json 变动时才触发
+  workflow_dispatch: # 允许手动点按钮触发
+
+jobs:
+  build_and_publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Sing-box
+        run: |
+          # 下载官方最新的 sing-box (Linux版)
+          echo "Downloading Sing-box..."
+          VERSION=$(curl -s https://api.github.com/repos/SagerNet/sing-box/releases/latest | jq -r .tag_name)
+          echo "Latest version: $VERSION"
+          wget -qO- https://github.com/SagerNet/sing-box/releases/download/${VERSION}/sing-box-${VERSION#v}-linux-amd64.tar.gz | tar -zx
+          mv sing-box-*/sing-box .
+          chmod +x sing-box
+
+      - name: Compile JSON to SRS
+        run: |
+          mkdir -p binary
+          # 查找 src 目录下所有的 json 文件
+          for file in src/*.json; do
+            # 获取文件名（不带后缀），例如 my-rules
+            filename=$(basename "$file" .json)
+            echo "Compiling $filename..."
+            # 编译命令
+            ./sing-box rule-set compile "$file" -o "binary/${filename}.srs"
+          done
+
+      - name: Upload to Release Branch
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./binary
+          publish_branch: release  # 编译好的文件会放在这就叫 release 的分支里
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
