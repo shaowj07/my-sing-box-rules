@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "rules": [
+    {
+      "domain_suffix": [
+        "apple.comscoreresearch.com",
+        "apple.news",
+        "gateway.icloud.com",
+        "gspe1-ssl.ls.apple.com",
+        "news-assets.apple.com",
+        "news-client-search.apple.com",
+        "news-client.apple.com",
+        "news-edge.apple.com",
+        "news-events.apple.com"
+      ]
+    }
+  ]
+}
